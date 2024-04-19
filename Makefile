@@ -5,7 +5,7 @@ CCFLAGS = -Wall -Wextra -std=c++17 -O0 -lm
 
 .PHONY: build clean
 
-build: servere colorare compresie p4
+build: servere colorare compresie criptat
 
 # Nu compilați aici, nici măcar ca dependențe de reguli.
 run-p1:
@@ -15,7 +15,7 @@ run-p2:
 run-p3:
 	./compresie
 run-p4:
-	./p4
+	./criptat
 
 # Schimbați numele surselor (și, eventual, ale executabilelor - peste tot).
 servere: servere.cpp
@@ -24,9 +24,9 @@ colorare: colorare.cpp
 	$(CC) -o $@ $^ $(CCFLAGS)
 compresie: compresie.cpp
 	$(CC) -o $@ $^ $(CCFLAGS)
-p4: p4.cpp
+criptat: criptat.cpp
 	$(CC) -o $@ $^ $(CCFLAGS)
 
 # Vom șterge executabilele.
 clean:
-	rm -f servere colorare compresie p4
+	rm -f servere colorare compresie criptat
