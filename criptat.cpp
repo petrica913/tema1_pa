@@ -35,7 +35,6 @@ int max_password_length(int N, vector<string>& words, char let) {
         if (frac > 0.5) {
             let_in_words += let_in_curr;
             result += words[i].length();
-            cout << result << " ";
         } else {
             int aux_let_in_words = let_in_words + let_in_curr;
             int aux_result = result + words[i].length();

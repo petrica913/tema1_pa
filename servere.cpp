@@ -6,28 +6,13 @@
 #include <limits>
 
 using namespace std;
-
+/* Structura pentru o entitate de tip server */
 struct Server {
     int power;
     int threshold;
 };
 
-bool intersect(Server a, Server b) {
-    if (a.power >= b.threshold)
-        return false;
-    return true;
-}
-
-double calculate_supply(Server a, Server b) {
-    double supply_choice;
-    if (a.threshold > b.threshold) {
-        supply_choice = (a.power - a.threshold - b.power - b.threshold) * (-1);
-    } else {
-        supply_choice = (a.power - a.threshold - b.power - b.threshold);
-    }
-    return supply_choice / 2;
-}
-
+/* Clasa Curbe reprezinta o dreapta definita de 2 puncte */
 class Curbe {
  public:
     int x1, x2, y1, y2;
@@ -39,12 +24,13 @@ class Curbe {
         this->y2 = y2;
     }
  public:
+    /* Functia get_slope() va determina panta dreptei */
     int get_slope() {
         return (y2 - y1) / (x2 - x1);
     }
 };
 
-
+/* Functie de verificare daca 2 drepte se intersecteaza */
 bool doIntersect(Curbe c1, Curbe c2) {
     if (c1.x2 < c2.x2)
         return false;
@@ -73,26 +59,37 @@ int main() {
 
     for (int i = 0; i < N; ++i) {
         fin >> servers[i].threshold;
+        /* "Trasez" graficul serverului curent prin 2 drepte 
+        *   Prima mea dreapta "curbe" va fi o drepta cu panta 1
+        *   Cea de a doua dreapta va fi o dreapta cu panta -1
+        */
         Curbe curbe((servers[i].threshold - servers[i].power)
         , 0, servers[i].threshold, servers[i].power);
         if (curbe.get_slope() == 1 && curbe.x1 >= maxim && curbe.y2 <= y1_min) {
             maxim = curbe.x1;
             a = servers[i];
             c1 = curbe;
+            // daca dreapta mea cu panta 1 este "cea mai din dreapta" panta
+            // dintre toate graficele trasate, atunci o voi retine in c1
         }
         Curbe curbe2(servers[i].threshold, servers[i].power
         , (servers[i].threshold + servers[i].power), 0);
         if (curbe2.get_slope() == -1 && curbe2.x2 <= minim
             && curbe2.y1 <= y2_min) {
-                minim = curbe2.x2;
-                b = servers[i];
-                c2 = curbe2;
+            minim = curbe2.x2;
+            b = servers[i];
+            c2 = curbe2;
+            // daca dreapta mea cu panta 1 este "cea mai din stanga" panta
+            // dintre toate graficele trasate, atunci o voi retine in c2
         }
     }
-
+    // supply_choice-ul este chiar coordonata punctului de intersectie al
+    // celor doua drepte mentionate anterior
     supply_choice = (c1.x1 + c2.x2);
     supply_choice /= 2;
     double min_value = 1e9;
+    // iterez printre toate serverele si vad care este cea mai mica valoare
+    // a functiei date in enunt => puterea sistemului
     for (int i = 0; i < N; i++) {
         double value = servers[i].power
             - abs(supply_choice - servers[i].threshold);
